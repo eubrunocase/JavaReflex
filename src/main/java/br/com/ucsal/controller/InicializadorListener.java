@@ -1,9 +1,11 @@
 package br.com.ucsal.controller;
 
+import br.com.ucsal.controller.annotation.Inject;
 import br.com.ucsal.controller.annotation.Rota;
 import br.com.ucsal.controller.annotation.Singleton;
 import br.com.ucsal.controller.managers.InjectionManager;
 import br.com.ucsal.controller.managers.SingletonManager;
+import br.com.ucsal.persistencia.MemoriaProdutoRepository;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -59,12 +61,16 @@ public class InicializadorListener implements ServletContextListener {
                         System.out.println("CLASSE CARREGADA: " + file.getPath());
 
                         if (clazz.isAnnotationPresent(Singleton.class)) {
-                            SingletonManager.getInstance(clazz);
+                            MemoriaProdutoRepository.getInstancia();   // atention
                             System.out.println("CLASSE ANOTADA COM @SINGLETON INICIALIZADA: " + className);
                         }
 
-                        Object instance = clazz.getDeclaredConstructor().newInstance();
-                        InjectionManager.injectDependencies(instance); // Injentando a dependencia
+//                        Object instance = clazz.getDeclaredConstructor().newInstance();
+//                        InjectionManager.injectDependencies(instance);
+
+                        Object instance = clazz.isAnnotationPresent(Inject.class);
+                        InjectionManager.injectDependencies(instance);
+
 
                         if (clazz.isAnnotationPresent(Rota.class)) {
                             Rota rota = clazz.getAnnotation(Rota.class);

@@ -22,9 +22,9 @@ public class ProdutoListarServlet implements Command {
     @Inject
 	private ProdutoService produtoService;
 
-	public ProdutoListarServlet() {
-        produtoService = new ProdutoService(new HSQLProdutoRepository());
-	}
+//	public ProdutoListarServlet() {
+//        produtoService = new ProdutoService(new HSQLProdutoRepository());
+//	}
 	
 
     @Override

@@ -1,5 +1,7 @@
 package br.com.ucsal.persistencia;
 
+import static org.hsqldb.Tokens.T;
+
 public class PersistenciaFactory {
 
 	public static final int MEMORIA = 0;

@@ -19,16 +19,14 @@ public class MemoriaProdutoRepository implements ProdutoRepository<Produto, Inte
     
     private MemoriaProdutoRepository() {
     }
-    
-    
-    public static synchronized MemoriaProdutoRepository getInstancia() {
+
+    public static synchronized <T> MemoriaProdutoRepository getInstancia() {
     	if(instancia == null) {
     		instancia = new MemoriaProdutoRepository();
     	}
     	return instancia;
 	}
-    
-    
+
     @Override
     public void adicionar(Produto entidade) {
         int id = currentId.getAndIncrement();

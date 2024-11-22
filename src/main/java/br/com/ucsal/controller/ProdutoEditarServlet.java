@@ -19,9 +19,9 @@ public class ProdutoEditarServlet implements Command {
     @Inject
     private ProdutoService produtoService;
 
-    public ProdutoEditarServlet() {
-        this.produtoService = new ProdutoService(new HSQLProdutoRepository());
-    }
+//    public ProdutoEditarServlet() {
+//        this.produtoService = new ProdutoService(new HSQLProdutoRepository());
+//    }
 
 
     @Override

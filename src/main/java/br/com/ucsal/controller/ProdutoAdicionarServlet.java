@@ -21,10 +21,10 @@ public class ProdutoAdicionarServlet implements Command {
  @Inject
  private ProdutoService produtoService;
 
- public ProdutoAdicionarServlet() {
-     // Inicializa o serviço com o repositório
-     this.produtoService = new ProdutoService(new HSQLProdutoRepository());
- }
+// public ProdutoAdicionarServlet() {
+//
+//     this.produtoService = new ProdutoService(new HSQLProdutoRepository());
+// }
 
  @Override
  public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
