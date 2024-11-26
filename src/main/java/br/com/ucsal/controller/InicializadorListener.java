@@ -4,7 +4,6 @@ import br.com.ucsal.controller.annotation.Inject;
 import br.com.ucsal.controller.annotation.Rota;
 import br.com.ucsal.controller.annotation.Singleton;
 import br.com.ucsal.controller.annotation.Teste;
-import br.com.ucsal.controller.managers.InjectionManager;
 import br.com.ucsal.persistencia.MemoriaProdutoRepository;
 import br.com.ucsal.service.ProdutoService;
 import jakarta.servlet.ServletContext;

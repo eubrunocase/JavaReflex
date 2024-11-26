@@ -21,18 +21,6 @@ public class ProdutoController extends HttpServlet {
 
     private Map<String, Command> commands = new HashMap<>();
 
-//    @Override
-//    public void init() {
-//        // Mapeia os comandos
-//        commands.put("/editarProduto", new ProdutoEditarServlet());
-//        commands.put("/adicionarProduto", new ProdutoAdicionarServlet());
-//        commands.put("/excluirProduto", new ProdutoExcluirServlet());
-//        commands.put("/listarProdutos", new ProdutoListarServlet());
-//        commands.put("/", new ProdutoListarServlet()); // Roteia também a raiz da aplicação para listar produtos
-//        // Adicione outros comandos conforme necessário
-//        injectDependencies();
-//    }
-
     @Override
     public void init() throws ServletException {
        super.init();
@@ -47,7 +35,6 @@ public class ProdutoController extends HttpServlet {
         for (Class<?> rotaClass : rotas) {
             Rota rota = rotaClass.getAnnotation(Rota.class);
             String caminho = rota.caminho();
-
             try {
                 Command comando = (Command) rotaClass.getDeclaredConstructor().newInstance();
                 commands.put(caminho, comando);
@@ -60,32 +47,29 @@ public class ProdutoController extends HttpServlet {
         }
     }
 
+//    public void injectDependencies() {
+//
+//
+//    }
+
     public void injectDependencies() {
         Field[] fields = this.getClass().getDeclaredFields();
 
         for (Field field : fields) {
-            if (field.isAnnotationPresent(Inject.class)) {}
+            if (field.isAnnotationPresent(Inject.class)) {
+
+                try {
+                    field.setAccessible(true);
+                    Class<?> fieldType = field.getType();
+                    Produto produto = (Produto) fieldType.getDeclaredConstructor().newInstance();
+                    field.set(this, produto);
+
+                }  catch (Exception e) {
+                     throw new RuntimeException("ERRO AO INSTANCIAR CLASSE " + field.getName(), e);
+                }
+            }
         }
     }
-
-//    public void injectDependencies() {
-//        Field[] fields = this.getClass().getDeclaredFields();
-//
-//        for (Field field : fields) {
-//            if (field.isAnnotationPresent(Inject.class)) {
-//
-//                try {
-//                    field.setAccessible(true);
-//                    Class<?> fieldType = field.getType();
-//                    Produto produto = (Produto) fieldType.getDeclaredConstructor().newInstance();
-//                    field.set(this, produto);
-//
-//                }  catch (Exception e) {
-//                     throw new RuntimeException("ERRO AO INSTANCIAR CLASSE " + field.getName(), e);
-//                }
-//            }
-//        }
-//    }
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
