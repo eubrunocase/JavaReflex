@@ -5,27 +5,49 @@ import br.com.ucsal.persistencia.HSQLProdutoRepository;
 import br.com.ucsal.service.ProdutoService;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+
 
 public class InjectionManager {
 
-    public static void injectDependencies(Object target) {
-       Class<?> clazz = target.getClass();
-       Field[] fields = clazz.getDeclaredFields();
+//    public static void injectDependencies(Object target) {
+//        Class<?> clazz = target.getClass();
+//        Field[] fields = clazz.getDeclaredFields();
+//
+//        for (Field field : fields) {
+//            if (field.isAnnotationPresent(Inject.class)) {
+//                field.setAccessible(true);
+//
+//                try {
+//                    if (field.getType().equals(ProdutoService.class)) {
+//                        ProdutoService produtoService = new ProdutoService(new HSQLProdutoRepository());
+//                        field.set(target, produtoService);
+//                    }
+//                } catch (IllegalAccessException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 
-       for (Field field : fields) {
-           if (field.isAnnotationPresent(Inject.class)) {
-               field.setAccessible(true);
+    public static void injectDependencies (Object object)  {
+         Field[] fields = object.getClass().getDeclaredFields();
 
-               try {
-                   if (field.getType().equals(ProdutoService.class)) {
-                       ProdutoService produtoService = new ProdutoService(new HSQLProdutoRepository());
-                       field.set(target, produtoService);
-                   }
-               } catch (IllegalAccessException e ) {
-                  e.printStackTrace();
-               }
-           }
-       }
+         for (Field field : fields) {
+             if (field.isAnnotationPresent(Inject.class)) {
+
+                 try {
+                 field.setAccessible(true);
+                 Class<?> fieldType = field.getType();
+                 ProdutoService produtoService = (ProdutoService) fieldType.getDeclaredConstructor().newInstance();
+
+                 field.set(object, produtoService);
+
+                  } catch (Exception e) {
+                      throw new RuntimeException("Erro ao instanciar classe " + field.getName(), e);
+                  }
+             }
+         }
     }
 
 

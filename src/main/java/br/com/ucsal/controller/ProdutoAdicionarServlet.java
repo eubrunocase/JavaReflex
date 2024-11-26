@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import br.com.ucsal.controller.annotation.Inject;
 import br.com.ucsal.controller.annotation.Rota;
+import br.com.ucsal.controller.annotation.Teste;
 import br.com.ucsal.persistencia.HSQLProdutoRepository;
 import br.com.ucsal.service.ProdutoService;
 import jakarta.servlet.RequestDispatcher;
@@ -22,7 +23,6 @@ public class ProdutoAdicionarServlet implements Command {
  private ProdutoService produtoService;
 
 // public ProdutoAdicionarServlet() {
-//
 //     this.produtoService = new ProdutoService(new HSQLProdutoRepository());
 // }
 

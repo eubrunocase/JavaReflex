@@ -3,19 +3,22 @@ package br.com.ucsal.controller;
 import br.com.ucsal.controller.annotation.Inject;
 import br.com.ucsal.controller.annotation.Rota;
 import br.com.ucsal.controller.annotation.Singleton;
+import br.com.ucsal.controller.annotation.Teste;
 import br.com.ucsal.controller.managers.InjectionManager;
-import br.com.ucsal.controller.managers.SingletonManager;
 import br.com.ucsal.persistencia.MemoriaProdutoRepository;
+import br.com.ucsal.service.ProdutoService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebListener;
 
 import java.io.File;
-import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Set;
+
+
 
 @WebListener
 public class InicializadorListener implements ServletContextListener {
@@ -65,27 +68,13 @@ public class InicializadorListener implements ServletContextListener {
                             System.out.println("CLASSE ANOTADA COM @SINGLETON INICIALIZADA: " + className);
                         }
 
-//                        Object instance = clazz.getDeclaredConstructor().newInstance();
-//                        InjectionManager.injectDependencies(instance);
-
-                        Object instance = clazz.isAnnotationPresent(Inject.class);
-                        InjectionManager.injectDependencies(instance);
-
-
-                        if (clazz.isAnnotationPresent(Rota.class)) {
-                            Rota rota = clazz.getAnnotation(Rota.class);
-                            Object servlet = clazz.getDeclaredConstructor().newInstance();
-                            context.addServlet(clazz.getSimpleName(), (jakarta.servlet.Servlet) servlet)
-                                    .addMapping(rota.caminho());
-
-                            System.out.println("ROTA REGISTRADA: " + rota.caminho());
-                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                         System.err.println("ERRO AO TENTAR INICIALIZAR CLASSE: " + file.getName());
                     }
                 }
             }
+
         } else {
             System.err.println("DIRETORIO INVALIDO/VAZIO: " + directory.getAbsolutePath());
            }
