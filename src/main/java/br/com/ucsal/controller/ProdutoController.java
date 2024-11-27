@@ -42,7 +42,7 @@ public class ProdutoController extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getPathInfo();
-        System.out.println("Recebendo requisição no caminho: " + path);
+        System.out.println("Recebendo requisição na @ROTA: " + path);
 
         Command command = commands.get(path);
 

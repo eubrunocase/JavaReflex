@@ -1,7 +1,9 @@
 package br.com.ucsal.controller;
 
 import br.com.ucsal.controller.annotation.Inject;
+import br.com.ucsal.controller.annotation.Service;
 import br.com.ucsal.controller.annotation.Singleton;
+import br.com.ucsal.controller.manager.Injetor;
 import br.com.ucsal.controller.manager.ManagerSingleton;
 import br.com.ucsal.model.Produto;
 import br.com.ucsal.persistencia.MemoriaProdutoRepository;
@@ -33,7 +35,7 @@ public class InicializadorListener implements ServletContextListener {
         System.out.println("Inicializando a aplicação...");
 
         try {
-            injetarDependencias();
+
         } catch (Exception e) {
             System.out.println("Erro ao injetar dependências: " + e.getMessage());
             e.printStackTrace();
@@ -55,7 +57,6 @@ public class InicializadorListener implements ServletContextListener {
         } catch (Exception e) {
              e.printStackTrace();
         }
-        chargeSingleton();
         System.out.println("Aplicação inicializada com sucesso!");
     }
 
@@ -77,6 +78,26 @@ public class InicializadorListener implements ServletContextListener {
                         System.out.println("TENTANDO CARREGAR A CLASSE " + className);
                        // Class<?> clazz = Class.forName(className, true, servletContext.getClassLoader());
                         System.out.println("CLASSE CARREGADA COM SUCESSO " + className);
+
+                        Class<?> clazz = Class.forName(className, true, servletContext.getClassLoader());
+
+                        Reflections reflectionsS = new Reflections("br.com.ucsal");
+                        Set<?> types = reflectionsS.getTypesAnnotatedWith(Singleton.class);
+
+                        for (Object classe : types) {
+                        if (clazz.isAnnotationPresent(Singleton.class)) {
+                             ManagerSingleton.getInstance(clazz);
+                            System.out.println("Classe anotada com @Singleton inicializada: " + className);
+                           }
+                        }
+
+                        for (Object classe : reflectionsS.getTypesAnnotatedWith(Service.class)) {
+                            if (clazz.isAnnotationPresent(Service.class)) {
+                                Object instance = clazz.getDeclaredConstructor().newInstance();
+                                Injetor.injectDependencies(instance);
+                            }
+                        }
+
                     } catch (Exception e) {
                        System.out.println("ERRO AO CARREGAR A CLASSE " + file.getName());
                     }
@@ -85,52 +106,7 @@ public class InicializadorListener implements ServletContextListener {
         }
     }
 
-    private void chargeSingleton () {
-        Reflections reflections = new Reflections("br.com.ucsal");
-        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Singleton.class);
 
-        for (Class<?> clazz : classes) {
-                try {
-                    MemoriaProdutoRepository.getInstancia();
-                    System.out.println("CLASSE ANOTADA COM @SINGLETON INICIALIZADA " + clazz.getSimpleName());
-                } catch (Exception e) {
-                   throw new RuntimeException("ERRO AO CARREGAR A CLASSE @SINGLETON" + clazz.getSimpleName());
-                }
-        }
-    }
 
-    private void injetarDependencias() throws IllegalAccessException {
-        Reflections reflections = new Reflections("br.com.ucsal");
-        Set<Field> fields = reflections.getFieldsAnnotatedWith(Inject.class);
 
-        for (Field field : fields) {
-            field.setAccessible(true);
-
-            Object dependency = resolverDependencia(field.getType());
-            if (dependency != null) {
-                Class<?> declaringClass = field.getDeclaringClass();
-               // Object instance = ManagerSingleton.getInstance(declaringClass);
-
-                if (Modifier.isStatic(field.getModifiers())) {
-                    field.set(null, dependency);
-                } else {
-                    field.set(this, dependency);
-                }
-                System.out.println("Dependência injetada: " + field.getName() + " na classe " + declaringClass.getSimpleName());
-            } else {
-                System.out.println("Não foi possível resolver a dependência para o campo: " + field.getName());
-            }
-        }
-    }
-
-    private Object resolverDependencia(Class<?> tipo) {
-        if (ProdutoService.class.isAssignableFrom(tipo)) {
-            ProdutoRepository<?, ?> repository = PersistenciaFactory.getProdutoRepository(1);
-            if (repository == null) {
-                throw new IllegalArgumentException("ProdutoRepository não pode ser nulo");
-            }
-            return new ProdutoService((ProdutoRepository<Produto, Integer>) repository);
-        }
-        throw new IllegalArgumentException("Não foi possível resolver a dependência para o tipo: " + tipo.getName());
-    }
 }

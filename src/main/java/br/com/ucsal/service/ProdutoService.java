@@ -3,13 +3,14 @@ package br.com.ucsal.service;
 import java.util.List;
 
 import br.com.ucsal.controller.annotation.Inject;
+import br.com.ucsal.controller.annotation.Service;
 import br.com.ucsal.model.Produto;
 import br.com.ucsal.persistencia.HSQLProdutoRepository;
 import br.com.ucsal.persistencia.MemoriaProdutoRepository;
 import br.com.ucsal.persistencia.PersistenciaFactory;
 import br.com.ucsal.persistencia.ProdutoRepository;
 
-
+@Service
 public class ProdutoService {
 
  private ProdutoRepository<Produto, Integer> produtoRepository;
