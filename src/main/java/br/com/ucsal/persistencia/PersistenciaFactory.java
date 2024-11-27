@@ -1,5 +1,7 @@
 package br.com.ucsal.persistencia;
 
+import br.com.ucsal.controller.manager.ManagerSingleton;
+
 import static org.hsqldb.Tokens.T;
 
 public class PersistenciaFactory {

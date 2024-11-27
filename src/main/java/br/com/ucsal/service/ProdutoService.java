@@ -14,6 +14,7 @@ public class ProdutoService {
 
  private ProdutoRepository<Produto, Integer> produtoRepository;
 
+ @Inject
  public ProdutoService(ProdutoRepository<Produto, Integer> produtoRepository) {
      this.produtoRepository = produtoRepository;
  }

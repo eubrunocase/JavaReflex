@@ -5,9 +5,7 @@ import java.util.List;
 
 import br.com.ucsal.controller.annotation.Inject;
 import br.com.ucsal.controller.annotation.Rota;
-import br.com.ucsal.controller.annotation.Teste;
 import br.com.ucsal.model.Produto;
-import br.com.ucsal.persistencia.HSQLProdutoRepository;
 import br.com.ucsal.service.ProdutoService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
