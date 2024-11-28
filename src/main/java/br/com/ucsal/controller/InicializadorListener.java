@@ -5,6 +5,7 @@ import br.com.ucsal.controller.annotation.Service;
 import br.com.ucsal.controller.annotation.Singleton;
 import br.com.ucsal.controller.manager.Injetor;
 import br.com.ucsal.controller.manager.ManagerSingleton;
+import br.com.ucsal.persistencia.MemoriaProdutoRepository;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -27,12 +28,6 @@ public class InicializadorListener implements ServletContextListener {
 
         System.out.println("Inicializando a aplicação...");
 
-        try {
-
-        } catch (Exception e) {
-            System.out.println("Erro ao injetar dependências: " + e.getMessage());
-            e.printStackTrace();
-        }
         ServletContext context = sce.getServletContext();
         context.setAttribute("commands", commands);
         try {
@@ -79,10 +74,10 @@ public class InicializadorListener implements ServletContextListener {
 
 
                             if (clazz.isAnnotationPresent(Singleton.class)) {
-                                ManagerSingleton.getInstance(clazz);
+                                MemoriaProdutoRepository.getInstancia();
                                 System.out.println("Classe anotada com @Singleton inicializada: " + className);
                             }
-                        
+
 
                             if (clazz.isAnnotationPresent(Inject.class)) {
                                 Object instance = clazz.getDeclaredConstructor().newInstance();
