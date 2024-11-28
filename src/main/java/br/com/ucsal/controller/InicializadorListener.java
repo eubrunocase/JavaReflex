@@ -77,19 +77,18 @@ public class InicializadorListener implements ServletContextListener {
                         Reflections reflectionsS = new Reflections("br.com.ucsal");
                         Set<?> types = reflectionsS.getTypesAnnotatedWith(Singleton.class);
 
-                        for (Object classe : types) {
+
                             if (clazz.isAnnotationPresent(Singleton.class)) {
                                 ManagerSingleton.getInstance(clazz);
                                 System.out.println("Classe anotada com @Singleton inicializada: " + className);
                             }
-                        }
+                        
 
-                        for (Object classe : reflectionsS.getTypesAnnotatedWith(Inject.class)) {
                             if (clazz.isAnnotationPresent(Inject.class)) {
                                 Object instance = clazz.getDeclaredConstructor().newInstance();
                                 Injetor.injetarDependencias(instance);
                             }
-                        }
+
 
                     } catch (Exception e) {
                         System.out.println("ERRO AO CARREGAR A CLASSE " + file.getName());
@@ -98,7 +97,4 @@ public class InicializadorListener implements ServletContextListener {
             }
         }
     }
-
-
-
 }
