@@ -1,7 +1,6 @@
 package br.com.ucsal.controller;
 
 import java.io.IOException;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +17,6 @@ import org.reflections.Reflections;
 public class ProdutoController extends HttpServlet {
 
     private Map<String, Command> commands = new HashMap<>();
-
 
     @Override
     public void init() {
@@ -37,7 +35,6 @@ public class ProdutoController extends HttpServlet {
             }
         }
     }
-
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

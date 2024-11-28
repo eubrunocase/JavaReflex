@@ -21,6 +21,10 @@ public class ProdutoAdicionarServlet implements Command {
     @Inject
     private ProdutoService produtoService;
 
+//        public ProdutoAdicionarServlet() {
+//        this.produtoService = new ProdutoService(new HSQLProdutoRepository());
+//       }
+
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
