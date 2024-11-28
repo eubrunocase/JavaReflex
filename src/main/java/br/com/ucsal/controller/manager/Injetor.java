@@ -6,7 +6,17 @@ import br.com.ucsal.controller.annotation.Service;
 import br.com.ucsal.controller.annotation.Singleton;
 
 import java.lang.reflect.Field;
-
+/*
+* @Author: Bruno Cazé
+*
+* @Version: 1.0
+*
+* @Since: 28/11/2024
+*
+* Classe Injetor, responsável por conter o método que garante a injeção de dependência correta nas classes necesárias.
+* Nesta classe temos um único método, que contém a lógica da injeção de dependência atráves das anotações @Service e @Inject
+*
+ */
 public class Injetor {
 
     public static void injetarDependencias(Object target) {
