@@ -2,42 +2,49 @@ package br.com.ucsal.controller.manager;
 
 
 import br.com.ucsal.controller.annotation.Inject;
+import br.com.ucsal.controller.annotation.Service;
+import br.com.ucsal.controller.annotation.Singleton;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-
 
 public class Injetor {
 
-    private static Map<Class<?>, Object> instancia = new HashMap<>();
+    public static void injetarDependencias(Object target) {
+        Class<?> clazz = target.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        try {
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(Inject.class)) {
+                    Object dependency;
 
+                    Class<?> fieldType = field.getType();
+                    Class<?> implClass = fieldType;
 
-    public static void injetarDependencias(Object objeto) {
-        Field[] campos = objeto.getClass().getDeclaredFields();
-        for (Field campo : campos) {
-            if (campo.isAnnotationPresent(Inject.class)) {
-                Object instancia = obterInstancia(campo.getType());
-                campo.setAccessible(true);
-                try {
-                    campo.set(objeto, instancia);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException("Falha ao injetar dependência: " + campo.getName(), e);
+                    if (fieldType.isInterface()) {
+                        Service implAnnotation = field.getAnnotation(Service.class);
+                        if (implAnnotation != null) {
+                            implClass = implAnnotation.value();
+                        } else {
+                            throw new RuntimeException("Cannot inject dependency for interface " + fieldType.getName() + " without @ImplementedBy annotation");
+                        }
+                    }
+
+                    if (implClass.isAnnotationPresent(Singleton.class)) {
+                        dependency = ManagerSingleton.getInstance(implClass);
+                    } else {
+                        dependency = implClass.getDeclaredConstructor().newInstance();
+                        injetarDependencias(dependency); // Recursive injection
+                    }
+
+                    field.setAccessible(true);
+                    field.set(target, dependency);
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public static Object obterInstancia(Class<?> classe) {
-        if (!instancia.containsKey(classe)) {
-            try {
-                instancia.put(classe, classe.getDeclaredConstructor().newInstance());
-            } catch (Exception e) {
-                throw new RuntimeException("Falha ao criar instância da classe: " + classe.getName(), e);
-            }
-        }
-        return instancia.get(classe);
-}
 
 
 }

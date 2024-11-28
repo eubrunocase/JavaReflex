@@ -1,6 +1,7 @@
 package br.com.ucsal.controller;
 
 import br.com.ucsal.controller.annotation.Inject;
+import br.com.ucsal.controller.annotation.Rota;
 import br.com.ucsal.controller.annotation.Service;
 import br.com.ucsal.controller.annotation.Singleton;
 import br.com.ucsal.controller.manager.Injetor;
@@ -12,6 +13,7 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import org.reflections.Reflections;
 import java.io.File;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -29,7 +31,7 @@ public class InicializadorListener implements ServletContextListener {
         System.out.println("Inicializando a aplicação...");
 
         ServletContext context = sce.getServletContext();
-        context.setAttribute("commands", commands);
+
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             Enumeration<URL> resources = classLoader.getResources("");
@@ -48,12 +50,12 @@ public class InicializadorListener implements ServletContextListener {
         System.out.println("Aplicação inicializada com sucesso!");
     }
 
-    private void ProcessarDiretorios (File directory, ServletContext servletContext) {
+    private void ProcessarDiretorios (File directory, ServletContext context) {
         if (directory != null && directory.exists() && directory.isDirectory()) {
 
             for (File file : directory.listFiles()) {
                 if (file.isDirectory()) {
-                    ProcessarDiretorios(file, servletContext);
+                    ProcessarDiretorios(file, context);
                 } else if (file.getName().endsWith(".class")) {
 
                     try {
@@ -64,32 +66,44 @@ public class InicializadorListener implements ServletContextListener {
                                 .replace(".class", "");
 
                         System.out.println("TENTANDO CARREGAR A CLASSE " + className);
-                        // Class<?> clazz = Class.forName(className, true, servletContext.getClassLoader());
                         System.out.println("CLASSE CARREGADA COM SUCESSO " + className);
 
-                        Class<?> clazz = Class.forName(className, true, servletContext.getClassLoader());
 
-                        Reflections reflectionsS = new Reflections("br.com.ucsal");
-                        Set<?> types = reflectionsS.getTypesAnnotatedWith(Singleton.class);
+                        Class<?> clazz = Class.forName(className, true, context.getClassLoader());
+                        System.out.println(clazz.isAnnotationPresent(Inject.class));
 
 
-                            if (clazz.isAnnotationPresent(Singleton.class)) {
-                                MemoriaProdutoRepository.getInstancia();
-                                System.out.println("Classe anotada com @Singleton inicializada: " + className);
+                        if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
+                            continue;
+                        }
+
+
+                        if (clazz.isAnnotationPresent(Singleton.class)) {
+                                ManagerSingleton.getInstance(clazz);
+                                System.out.println("CLASSE ANOTADA COM @SINGLETON INICIALIZADA: " + className);
                             }
 
 
-                            if (clazz.isAnnotationPresent(Inject.class)) {
-                                Object instance = clazz.getDeclaredConstructor().newInstance();
-                                Injetor.injetarDependencias(instance);
-                            }
+                        if (clazz.isAnnotationPresent(Rota.class)) {
+
+                            Rota rota = clazz.getAnnotation(Rota.class);
+                            Command servlet = (Command) clazz.getDeclaredConstructor().newInstance();
+                            commands.put(rota.caminho(),servlet);
+                            Injetor.injetarDependencias(servlet);
+                            System.out.println("@ROTA REGISTRADA NO CAMINHO " + rota.caminho());
+
+                        }
 
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                         System.out.println("ERRO AO CARREGAR A CLASSE " + file.getName());
                     }
                 }
             }
+            context.setAttribute("command",commands);
+        } else {
+            System.err.println("Diretório inválido ou vazio: " + directory.getAbsolutePath());
         }
     }
 }

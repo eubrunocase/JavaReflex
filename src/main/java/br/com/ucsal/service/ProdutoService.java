@@ -10,14 +10,16 @@ import br.com.ucsal.persistencia.MemoriaProdutoRepository;
 import br.com.ucsal.persistencia.PersistenciaFactory;
 import br.com.ucsal.persistencia.ProdutoRepository;
 
-@Service
+
 public class ProdutoService {
 
- private ProdutoRepository<Produto, Integer> produtoRepository;
+    @Inject
+    @Service(HSQLProdutoRepository.class)
+    private ProdutoRepository<Produto, Integer> produtoRepository;
 
-public ProdutoService(ProdutoRepository<Produto, Integer> produtoRepository) {
-    this.produtoRepository = produtoRepository;
-}
+   public ProdutoService() {
+    // CONSTRUTOR DEFAULT
+   }
 
  public void adicionarProduto(String nome, double preco) {
      Produto produto = new Produto(null, nome, preco);

@@ -22,10 +22,6 @@ public class ProdutoListarServlet implements Command {
     @Inject
 	private ProdutoService produtoService;
 
-//	public ProdutoListarServlet() {
-//        produtoService = new ProdutoService(new HSQLProdutoRepository());
-//	}
-
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 

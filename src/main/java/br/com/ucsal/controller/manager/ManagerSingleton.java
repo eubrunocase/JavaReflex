@@ -3,6 +3,7 @@ package br.com.ucsal.controller.manager;
 import br.com.ucsal.controller.annotation.Singleton;
 import br.com.ucsal.persistencia.MemoriaProdutoRepository;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,9 @@ public class ManagerSingleton {
 
         if (clazz.isAnnotationPresent(Singleton.class)) {
             try {
-                T instance = clazz.getDeclaredConstructor().newInstance();
+                Constructor<T> constructor = clazz.getDeclaredConstructor();
+                constructor.setAccessible(true); // Permitir acesso a construtor privado
+                T instance = constructor.newInstance();
                 instances.put(clazz, instance);
                 return instance;
             } catch (Exception e) {

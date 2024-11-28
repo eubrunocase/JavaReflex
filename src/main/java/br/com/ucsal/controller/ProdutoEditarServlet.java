@@ -20,10 +20,6 @@ public class ProdutoEditarServlet implements Command {
     @Inject
     private ProdutoService produtoService;
 
-//    public ProdutoEditarServlet() {
-//        this.produtoService = new ProdutoService(new HSQLProdutoRepository());
-//    }
-
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String method = request.getMethod();

@@ -18,10 +18,6 @@ public class ProdutoExcluirServlet implements Command {
 	@Inject
 	private ProdutoService produtoService;
 
-//	public ProdutoExcluirServlet() {
-//		produtoService = new ProdutoService(new HSQLProdutoRepository());
-//	}
-
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Lógica de exclusão
