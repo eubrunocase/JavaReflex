@@ -7,11 +7,9 @@ import br.com.ucsal.controller.managers.SingletonManager;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebListener;
-
 import java.io.File;
-import java.io.IOException;
+
 import java.net.URL;
 import java.util.Enumeration;
 

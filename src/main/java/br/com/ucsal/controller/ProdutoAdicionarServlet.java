@@ -1,9 +1,6 @@
 package br.com.ucsal.controller;
 
-
-
 import java.io.IOException;
-
 import br.com.ucsal.controller.annotation.Inject;
 import br.com.ucsal.controller.annotation.Rota;
 import br.com.ucsal.persistencia.HSQLProdutoRepository;
